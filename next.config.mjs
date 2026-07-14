@@ -1,3 +1,8 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -12,10 +17,20 @@ const nextConfig = {
     // Pre-existing pglite/mock-DB typings block the build; the app runs fine. Ship the demo.
     ignoreBuildErrors: true,
   },
-  // Ensure the SQL schema/seed + route geojson ship into the Vercel serverless bundle,
-  // so the in-memory pglite mock DB can read them at runtime (fs.readFileSync).
+  // The in-memory pglite mock DB reads files at RUNTIME via fs (not imports), so Next's
+  // tracer won't bundle them into the Vercel serverless function on its own. Pin the trace
+  // root to THIS dir (a parent lockfile otherwise mis-infers it) and force-include:
+  //   • the pglite WASM + data blobs (lib/supabase/mockDb.ts reads dist/*.wasm + *.data)
+  //   • the SQL schema/policies/seed (db/*.sql)
+  //   • the route geojson (seed/routes/*.geojson)
+  outputFileTracingRoot: __dirname,
   outputFileTracingIncludes: {
-    '/**': ['./db/**', './seed/**'],
+    '/**': [
+      './db/**/*.sql',
+      './seed/**/*',
+      './node_modules/@electric-sql/pglite/dist/*.wasm',
+      './node_modules/@electric-sql/pglite/dist/*.data',
+    ],
   },
 };
 
