@@ -199,3 +199,12 @@ Enforced throughout (PLAN.md honesty constraints, BUILD SPEC §2): no hardcoded 
 Doppler; no faked departmental integrations; delay from this system's own history, not an external
 API; replay is never hidden and posts to the real ingest endpoint; every pilot gap is stated out
 loud; no invented statistics, accuracy percentages, or legal section numbers.
+
+---
+
+## Contributors
+
+| Name | GitHub | Role |
+|---|---|---|
+| Adnaan Khanday | [@CodeWithAdnaan](https://github.com/CodeWithAdnaan) | Core architecture, SEAL engine, backend API |
+| Mehraan Amin | [@CodeWithMehru](https://github.com/CodeWithMehru) | UI/UX, dashboard design, frontend components |
