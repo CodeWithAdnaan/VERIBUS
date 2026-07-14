@@ -1,0 +1,53 @@
+{
+  "name": "veribus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VERIBUS — School Transport Integrity Platform. Concept pilot for RTO Kashmir / J&K Transport Department. Every trip, verified. Runs on the SEAL engine (Signal · Evidence · Alerts · Ledger).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:push": "node scripts/db-push.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "demo:reset": "node scripts/demo-reset.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.4",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.47.10",
+    "@turf/turf": "^7.1.0",
+    "idb": "^8.0.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.469.0",
+    "next": "^15.1.4",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
+    "three": "^0.185.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.15",
+    "@types/node": "^22.10.5",
+    "@types/pg": "^8.11.10",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "@types/three": "^0.185.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.7",
+    "pg": "^8.13.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "SYNTHETIC": true,
+  "_note": "SYNTHETIC placeholder near Srinagar. NOT a real road alignment. Replace before any demo.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Route C — Nishat → School", "synthetic": true },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [74.8700, 34.1100],
+          [74.8760, 34.1060],
+          [74.8820, 34.1010],
+          [74.8880, 34.0965],
+          [74.8940, 34.0920],
+          [74.9000, 34.0875],
+          [74.9060, 34.0830],
+          [74.9120, 34.0790]
+        ]
+      }
+    }
+  ]
+}

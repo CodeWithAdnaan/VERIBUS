@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  OpenGraph card source for public/og.png (1200x630).
+  This file is rendered ONCE at asset-generation time via headless chromium:
+
+    chromium - -headless=new - -hide-scrollbars - -virtual-time-budget=8000 \
+      - -window-size=1200,630 - -screenshot=public/og.png file://.../design/og.html
+
+  The Google Fonts link below exists only for that offline render step — the
+  running app self-hosts IBM Plex via next/font and never touches a CDN.
+  Colours are hardcoded token values from design/tokens.css (see comments).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #0a0e12;            /* --ink-950 */
+    color: #e4eaef;                 /* --ink-100 */
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  /* hairline panel frame — instrument, not SaaS card: 1px, no shadow */
+  .frame {
+    position: absolute; inset: 24px;
+    border: 1px solid #212b35;      /* --ink-700 */
+  }
+  .content {
+    position: absolute; inset: 24px;
+    padding: 72px 88px 64px;
+    display: flex; flex-direction: column;
+  }
+  .eyebrow {
+    font-size: 17px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6e8093;                 /* --ink-400 */
+  }
+  .lockup { display: flex; align-items: center; gap: 28px; margin-top: 40px; }
+  .wordmark {
+    font-size: 84px; font-weight: 600; letter-spacing: 0.06em;
+    line-height: 1; color: #e4eaef; /* --ink-100 */
+  }
+  .tagline {
+    margin-top: 22px; font-size: 30px; font-weight: 500;
+    color: #c7d1da;                 /* --ink-200 */
+  }
+  .thesis {
+    margin-top: 34px; font-size: 26px; font-weight: 500;
+    color: #e4eaef;                 /* --ink-100 */
+  }
+  .accent {
+    margin-top: 10px; font-size: 22px; font-weight: 500;
+    color: #1f6feb;                 /* --sig-info — the one accent */
+  }
+  .chain {
+    margin-top: auto;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 19px; font-weight: 400;
+    color: #48586a;                 /* --ink-500 */
+    white-space: nowrap;
+  }
+  .chain .link { color: #2e3a46; }  /* --ink-600 */
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="content">
+    <p class="eyebrow">Concept pilot · RTO Kashmir / J&amp;K Transport Department</p>
+    <div class="lockup">
+      <!-- the Seal, intact — 24-unit master from components/brand/Seal.tsx -->
+      <svg width="92" height="92" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" stroke="#e4eaef"/>
+        <path d="M8 8 L12 16 L16 8" stroke="#1f6feb"/>
+      </svg>
+      <div class="wordmark">VERIBUS</div>
+    </div>
+    <p class="tagline">School Transport Integrity Platform</p>
+    <p class="thesis">Tracking is the input. Evidence is the product.</p>
+    <p class="accent">Every trip, verified.</p>
+    <!-- real SHA-256 records, truncated per lib/format.ts shortHash -->
+    <p class="chain">dbf3b8…ee5254 <span class="link">──</span> fcc7e1…98dcff <span class="link">──</span> d4f542…e9ad61 <span class="link">──</span> d90eeb…7d78ff <span class="link">──</span> f7b093…080b75</p>
+  </div>
+</body>
+</html>

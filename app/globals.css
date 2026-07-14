@@ -1,0 +1,378 @@
+@import '../design/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  color: var(--ink-100);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* True-black ground with faint multi-colour light. Public (paper) surfaces paint
+   their own ground via .surface-public, which sits above this. */
+body {
+  background-color: var(--ink-950);
+  background-image:
+    radial-gradient(
+      ellipse 70% 55% at 12% -6%,
+      color-mix(in srgb, var(--viz-1) 12%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 65% 55% at 92% 2%,
+      color-mix(in srgb, var(--viz-3) 11%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 50% 108%,
+      color-mix(in srgb, var(--viz-2) 12%, transparent) 0%,
+      transparent 55%
+    );
+  background-attachment: fixed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Focus rings must be visible (accessibility §16) */
+:focus-visible {
+  outline: 2px solid var(--sig-info);
+  outline-offset: 2px;
+}
+
+/* Live-fix halo pulse (2s), used by the bus marker. */
+@keyframes fix-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Alert entry — 140ms translateY(6px) -> 0. Nothing else. */
+@keyframes alert-in {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.alert-in {
+  animation: alert-in 140ms var(--tw-ease, cubic-bezier(0.2, 0, 0, 1)) both;
+}
+
+/* Public-surface entrance — 500ms rise, instrument easing (the same curve as
+   tailwind's ease-instrument). fill 'both' so the reduced-motion kill-switch
+   lands every element on its final frame. Stagger via inline animation-delay. */
+@keyframes rise-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.rise-in {
+  animation: rise-in 500ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* /verify chain verification — links resolve to --sig-ok in sequence; on
+   tamper the hazard band snaps in where verification stops. */
+@keyframes cv-resolve {
+  from {
+    border-color: var(--ink-600);
+    color: var(--ink-500);
+  }
+  to {
+    border-color: var(--sig-ok);
+    color: var(--sig-ok);
+  }
+}
+.cv-resolve {
+  animation: cv-resolve 140ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes cv-snap {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.cv-snap {
+  transform-origin: top;
+  animation: cv-snap 120ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* Ops evidence chain — blocks settle in sequence (140ms, 60ms apart); the
+   hazard rule at a break snaps in at its slot in the sequence. Functional
+   motion only: it shows verification order, nothing decorative. */
+@keyframes evd-in {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.evd-in {
+  animation: evd-in 140ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes hazard-snap {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.hazard-snap {
+  transform-origin: top;
+  animation: hazard-snap 120ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* Speed-time strip — the speed line draws once (600ms); limit/violation bands
+   fade to their own final opacity (keyframe omits 'to', so it resolves to the
+   element's computed value). Fully drawn under reduced motion. */
+@keyframes sts-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.sts-draw {
+  stroke-dasharray: 1;
+  animation: sts-draw 600ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes sts-fade {
+  from {
+    opacity: 0;
+  }
+}
+.sts-fade {
+  animation: sts-fade 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* tokens.css zeroes animation/transition DURATIONS under reduced motion; the
+   staggers above also need their DELAYS collapsed, or elements would hold
+   their from-frame for the length of the delay. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-delay: 0.001ms !important;
+    transition-delay: 0.001ms !important;
+  }
+}
+
+/* Hero seal — slow rotation, adds "living document" feel to the stamp metaphor.
+   90s period: barely perceptible, not distracting. */
+@keyframes seal-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scroll hint — gentle Y bob + opacity pulse at the bottom of the hero. */
+@keyframes scroll-hint {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(4px);
+  }
+}
+
+/* Shimmer — subtle loading placeholder sweep for data surfaces. */
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--ink-900) 25%, var(--ink-800) 50%, var(--ink-900) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Status dot pulse — for live/active indicators in StatusBar. */
+@keyframes dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.dot-live {
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+/* Stagger utility — generic stagger for children entering. Applied via
+   inline animation-delay; the parent sets the base animation. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 600ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LUXURY MOTION — "Obsidian & Champagne"
+   Keyframes are defined here once; tailwind.config's animate-* utilities and the
+   hand-written .marquee/.foil-anim/.sheen classes both resolve against them.
+   All honour the reduced-motion killswitch in tokens.css.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Marquee — a duplicated track translated by -50% loops seamlessly. Default
+   direction is RIGHT → LEFT (content enters from the right, exits left). */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 100%;
+  gap: 0;
+  animation: marquee 34s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+/* Reverse marquee (LEFT → RIGHT) for a second, subtler band. */
+.marquee--reverse .marquee__track {
+  animation-direction: reverse;
+}
+
+/* Champagne foil shimmer — sweeps the metallic gradient across .foil-text. */
+@keyframes foil-shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 220% 50%;
+  }
+}
+
+/* Soft glow pulse — the hero seal / primary accents breathe gently. */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+/* Hover sheen sweep — used by the .sheen utility in tokens.css. */
+@keyframes sheen-sweep {
+  from {
+    left: -160%;
+  }
+  to {
+    left: 160%;
+  }
+}
+
+/* Gentle float — for a couple of decorative hero accents. */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Aurora — colourful background blobs drift + breathe on hero / login. */
+@keyframes aurora {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate3d(6%, -4%, 0) scale(1.15);
+    opacity: 1;
+  }
+  66% {
+    transform: translate3d(-5%, 5%, 0) scale(0.92);
+    opacity: 0.7;
+  }
+}
+
+/* ── Print (memo / reports) — §16 ── */
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm;
+  }
+  html,
+  body {
+    background: #fff;
+    color: #000;
+    font-family: var(--font-plex-serif), Georgia, serif;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

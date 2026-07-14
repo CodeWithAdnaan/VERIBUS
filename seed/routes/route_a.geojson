@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "SYNTHETIC": true,
+  "_note": "SYNTHETIC placeholder near Srinagar. NOT a real road alignment. Replace by drawing the real route on geojson.io before any demo.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Route A — Rainawari → School", "synthetic": true },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [74.7900, 34.0700],
+          [74.7975, 34.0740],
+          [74.8050, 34.0785],
+          [74.8130, 34.0830],
+          [74.8200, 34.0875],
+          [74.8270, 34.0920],
+          [74.8340, 34.0960]
+        ]
+      }
+    }
+  ]
+}

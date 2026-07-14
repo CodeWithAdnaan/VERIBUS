@@ -1,0 +1,166 @@
+/* ============================================================================
+   DESIGN TOKENS — "Monochrome + Spectrum"
+   Black-and-white chrome · a vibrant, varied accent palette for signal + data.
+
+   The chrome is strictly grayscale (black grounds, white hairlines, white text).
+   Colour is carried by a multi-hue "viz" palette used on the wordmark, CTAs,
+   the marquee and — loudest of all — the graphs. Reds still MEAN alert.
+   ============================================================================ */
+
+:root {
+  /* Neutrals — pure grayscale, true black ground */
+  --ink-950: #050506;
+  --ink-900: #0e0e10;
+  --ink-800: #161619;
+  --ink-700: #252528;
+  --ink-600: #38383c;
+  --ink-500: #54545a;
+  --ink-400: #7c7c83;
+  --ink-300: #a7a7ad;
+  --ink-200: #cfcfd3;
+  --ink-100: #f5f5f7; /* near-white text */
+
+  /* Public surfaces — white paper */
+  --paper: #f6f6f7;
+  --paper-2: #e9e9ec;
+
+  /* ── Vibrant "viz" palette — different colours for data + accents ───────── */
+  --viz-1: #5b8cff; /* electric blue */
+  --viz-2: #9b5cff; /* violet */
+  --viz-3: #ff4d9d; /* hot pink */
+  --viz-4: #1fd1c9; /* teal */
+  --viz-5: #4bd865; /* green */
+  --viz-6: #ffa63d; /* orange */
+
+  /* Rainbow gradient — for TEXT-CLIP (wordmark, highlights) + decorative edges.
+     Bright hues read well as glowing text on the black ground. */
+  --foil: linear-gradient(
+    120deg,
+    #5b8cff 0%,
+    #9b5cff 25%,
+    #ff4d9d 50%,
+    #ffa63d 73%,
+    #1fd1c9 100%
+  );
+  /* Jewel gradient — for BUTTONS with white text (medium-dark stops, safe contrast). */
+  --cta: linear-gradient(120deg, #3b5bff 0%, #7c3aed 52%, #db2777 100%);
+
+  /* NOTE: --gold* are repointed to white/grey so every legacy `gold` chrome
+     class (border-gold, bg-gold, text-gold) renders as clean monochrome. */
+  --gold: #f5f5f7;
+  --gold-deep: #9a9aa1;
+  --gold-soft: #ffffff;
+  --emerald: #16a34a;
+  --emerald-bright: #29d16a;
+  --ivory: #f5f5f7;
+
+  /* Signal — SEMANTIC. Vivid but meaningful; reds still mean alert/tamper. */
+  --sig-ok: #22c55e; /* verified / good — vivid green */
+  --sig-watch: #f59e0b; /* amber */
+  --sig-alert: #ef4444; /* red */
+  --sig-critical: #b91c1c;
+  --sig-info: #4361ee; /* interactive accent — royal blue (safe with white text) */
+  --sig-unmonitored: #8a8a90; /* coverage gaps — grey, NEVER red */
+
+  /* Tamper is a pattern, not a colour. */
+  --hazard: repeating-linear-gradient(45deg, #ef4444 0 10px, #050506 10px 20px);
+
+  /* Spacing base = 8px grid */
+  --grid: 8px;
+}
+
+/* Hazard band utility. */
+.hazard-band {
+  background: var(--hazard);
+}
+
+/* Numbers must not wobble. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* Ops ground vs Public ground */
+.surface-ops {
+  background: var(--ink-950);
+  color: var(--ink-100);
+}
+.surface-public {
+  background: var(--paper);
+  color: var(--ink-900);
+}
+
+/* Hairline panel. */
+.panel {
+  border: 1px solid var(--ink-700);
+  border-radius: 4px;
+  background: var(--ink-900);
+}
+
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+
+/* Spectrum text — rainbow gradient clipped to the glyphs. .foil-anim shimmers it. */
+.foil-text {
+  background: var(--foil);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.foil-anim {
+  animation: foil-shimmer 7s linear infinite;
+}
+
+/* White hairline — where a warmer/brighter 1px rule than ink-700 is wanted. */
+.gold-hairline {
+  border-color: color-mix(in srgb, var(--ink-100) 22%, transparent);
+}
+
+/* Glass — translucent black with a faint white edge. */
+.glass {
+  background: color-mix(in srgb, var(--ink-900) 74%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  border: 1px solid color-mix(in srgb, var(--ink-100) 12%, transparent);
+}
+
+/* Colourful glow — blue→violet halo for CTAs / the seal. */
+.glow-gold {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sig-info) 45%, transparent),
+    0 12px 40px -12px color-mix(in srgb, var(--viz-2) 60%, transparent);
+}
+
+/* Hover sheen — a bright diagonal light sweep. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: -160%;
+  width: 60%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    color-mix(in srgb, var(--ink-100) 26%, transparent),
+    transparent
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.sheen:hover::after {
+  animation: sheen-sweep 900ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Motion — honour reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

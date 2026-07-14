@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "SYNTHETIC": true,
+  "_note": "SYNTHETIC placeholder near Srinagar. NOT a real road alignment. Replace before any demo.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Route B — Lal Chowk → School", "synthetic": true },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [74.8060, 34.0740],
+          [74.8110, 34.0790],
+          [74.8170, 34.0835],
+          [74.8230, 34.0880],
+          [74.8300, 34.0930],
+          [74.8360, 34.0975]
+        ]
+      }
+    }
+  ]
+}
