@@ -36,6 +36,10 @@ function LoginCard() {
   const router = useRouter();
   const params = useSearchParams();
   const forbidden = params.get('forbidden') === '1';
+  // Optional post-login redirect (e.g. from the QR scan flow). Internal paths only.
+  const nextParam = params.get('next');
+  const safeNext =
+    nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,12 +70,12 @@ function LoginCard() {
         .eq('id', userId)
         .maybeSingle();
       const role = (profile as { role?: string } | null)?.role;
-      const home = role ? ROLE_HOME[role] : undefined;
-      if (!home) {
+      const dest = safeNext ?? (role ? ROLE_HOME[role] : undefined);
+      if (!dest) {
         setError('Signed in, but no dashboard is configured for this role.');
         return;
       }
-      window.location.href = home;
+      window.location.href = dest;
     } catch {
       setError('Could not reach the sign-in service. Check your connection and try again.');
     } finally {

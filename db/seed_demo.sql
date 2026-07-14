@@ -46,13 +46,19 @@ insert into trips (id, school_id, route_id, vehicle_id, driver_id, attendant_id,
   ('0c000007-0000-4000-8000-000000000007','0a5c0002-0000-4000-8000-000000000002','0a0c0003-0000-4000-8000-0000000000c3','0e100003-0000-4000-8000-000000000003','0d110003-0000-4000-8000-000000000003','0a770003-0000-4000-8000-000000000003','PICKUP',
    'COMPLETED', true, true, true, now() - interval '1 day', now() - interval '1 day' + interval '40 minutes', now() - interval '1 day','RTO_JK_v1');
 
--- ── EVIDENCE (one per alert; illustrative hashes; only on COMPLETED trips) ────
+-- ── EVIDENCE — REAL SHA-256 chain (recomputes valid via lib/engine/chain.ts). ──
+-- Hashes precomputed with recordHash(tripId, seq, kind, canonicalJson(payload), prev).
 insert into evidence_records (id, trip_id, seq, kind, payload, prev_hash, record_hash, created_at) values
-  ('0ed00001-0000-4000-8000-000000000001','0c000005-0000-4000-8000-000000000005',1,'ALERT','{"type":"OVERSPEED"}'::jsonb,      'GENESIS','a1b2c3d4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8f', now() - interval '1 day'),
-  ('0ed00002-0000-4000-8000-000000000002','0c000005-0000-4000-8000-000000000005',2,'ALERT','{"type":"LONG_STOP"}'::jsonb,      'a1b2c3d4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8f','b2c3d4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8fa1', now() - interval '1 day'),
-  ('0ed00003-0000-4000-8000-000000000003','0c000006-0000-4000-8000-000000000006',1,'ALERT','{"type":"ROUTE_DEVIATION"}'::jsonb,'GENESIS','c3d4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8fa1b2', now() - interval '2 days'),
-  ('0ed00004-0000-4000-8000-000000000004','0c000007-0000-4000-8000-000000000007',1,'ALERT','{"type":"OVERSPEED"}'::jsonb,      'GENESIS','d4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8fa1b2c3', now() - interval '1 day'),
-  ('0ed00005-0000-4000-8000-000000000005','0c000007-0000-4000-8000-000000000007',2,'ALERT','{"type":"DELAY"}'::jsonb,          'd4e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8fa1b2c3','e5f60718293a4b5c6d7e8f9012a1b2c3d4e5f60718293a4b5c6d7e8fa1b2c3d4', now() - interval '1 day');
+  ('0ed00001-0000-4000-8000-000000000001','0c000005-0000-4000-8000-000000000005',1,'ALERT','{"type":"OVERSPEED"}'::jsonb,'45b3eea8fb8fe675fa2a279d70ced33d24cc2b4ebcfb00c3f509093ce5e1ed2a','c28d2add3eb1ec047aaeb6de5e4e7fa330df21f745b474e5bd926a9527df1eed', now() - interval '1 day'),
+  ('0ed00002-0000-4000-8000-000000000002','0c000005-0000-4000-8000-000000000005',2,'ALERT','{"type":"LONG_STOP"}'::jsonb,'c28d2add3eb1ec047aaeb6de5e4e7fa330df21f745b474e5bd926a9527df1eed','6512b65dcaf0eede1b3ab675465742b03b2edeeaa21b5050d83dba238270cd25', now() - interval '1 day'),
+  ('0ed00003-0000-4000-8000-000000000003','0c000006-0000-4000-8000-000000000006',1,'ALERT','{"type":"ROUTE_DEVIATION"}'::jsonb,'fa10586f65f3acb0236dbad72571afc2c6e035765b91b0523ac80950ee95416d','97cd811f4de1de1004066601394b0123add39136a6fc6af8b3e8b3f441af37b4', now() - interval '2 days'),
+  ('0ed00004-0000-4000-8000-000000000004','0c000007-0000-4000-8000-000000000007',1,'ALERT','{"type":"OVERSPEED"}'::jsonb,'f9f28c2e42c2a6146790b5cae9b9a49ccf3692e07fcdf51c8a8ae5863148a5ca','92b5beda7a9967832bc9de324d0c826f1bda791ec5ffa9bb8577fb19def9f120', now() - interval '1 day'),
+  ('0ed00005-0000-4000-8000-000000000005','0c000007-0000-4000-8000-000000000007',2,'ALERT','{"type":"DELAY"}'::jsonb,'92b5beda7a9967832bc9de324d0c826f1bda791ec5ffa9bb8577fb19def9f120','4ef911b9740038baa2c861b2bbe67becbaab0e58f8a41941276509d5b8f58d98', now() - interval '1 day');
+
+-- Each completed trip's chain_head = its last record_hash → the public /verify QR target.
+update trips set chain_head = '6512b65dcaf0eede1b3ab675465742b03b2edeeaa21b5050d83dba238270cd25' where id = '0c000005-0000-4000-8000-000000000005';
+update trips set chain_head = '97cd811f4de1de1004066601394b0123add39136a6fc6af8b3e8b3f441af37b4' where id = '0c000006-0000-4000-8000-000000000006';
+update trips set chain_head = '4ef911b9740038baa2c861b2bbe67becbaab0e58f8a41941276509d5b8f58d98' where id = '0c000007-0000-4000-8000-000000000007';
 
 -- ── ALERTS ──────────────────────────────────────────────────────────────────
 insert into alerts (id, evidence_id, trip_id, school_id, vehicle_id, driver_id, type, subtype,
@@ -67,6 +73,12 @@ insert into alerts (id, evidence_id, trip_id, school_id, vehicle_id, driver_id, 
   ('0a1e0004-0000-4000-8000-000000000004','0ed00004-0000-4000-8000-000000000004','0c000007-0000-4000-8000-000000000007','0a5c0002-0000-4000-8000-000000000002','0e100003-0000-4000-8000-000000000003','0d110003-0000-4000-8000-000000000003','OVERSPEED',null,'CRITICAL','HIGH','OPEN', now() - interval '1 day', now() - interval '1 day' + interval '1 minute','Sustained 61 km/h in a 40 km/h zone for 31s on Harwan Road.','{"peak_kmh":61,"limit_kmh":40,"sustained_s":31}'::jsonb,'OVERSPEED:day1b'),
   -- A5 — school B MEDIUM delay.
   ('0a1e0005-0000-4000-8000-000000000005','0ed00005-0000-4000-8000-000000000005','0c000007-0000-4000-8000-000000000007','0a5c0002-0000-4000-8000-000000000002','0e100003-0000-4000-8000-000000000003','0d110003-0000-4000-8000-000000000003','DELAY',null,'INFO','MEDIUM','OPEN', now() - interval '1 day', now() - interval '1 day' + interval '3 minutes','Arrived 14 min behind the route median.','{"delay_min":14,"median_min":30}'::jsonb,'DELAY:day1b');
+
+-- Extra alerts for a richer RTO board (reuse evidence FKs; distinct identity_keys).
+insert into alerts (id, evidence_id, trip_id, school_id, vehicle_id, driver_id, type, subtype, severity, confidence, status, started_at, ended_at, summary, metrics, identity_key) values
+  ('0a1e0006-0000-4000-8000-000000000006','0ed00001-0000-4000-8000-000000000001','0c000005-0000-4000-8000-000000000005','0a5c0001-0000-4000-8000-000000000001','0e100002-0000-4000-8000-000000000002','0d110001-0000-4000-8000-000000000001','SIGNAL_LOST','SIGNAL_TAMPER','WARN','HIGH','OPEN', now() - interval '1 day' - interval '5 minutes', now() - interval '1 day','GPS blackout of 40s flagged as possible tamper — not a coverage gap.','{"gap_s":40,"kind":"SIGNAL_TAMPER"}'::jsonb,'SIGNAL_LOST:day1'),
+  ('0a1e0007-0000-4000-8000-000000000007','0ed00003-0000-4000-8000-000000000003','0c000006-0000-4000-8000-000000000006','0a5c0001-0000-4000-8000-000000000001','0e100001-0000-4000-8000-000000000001','0d110005-0000-4000-8000-000000000005','OVERSPEED',null,'CRITICAL','HIGH','OPEN', now() - interval '2 days' + interval '5 minutes', now() - interval '2 days' + interval '6 minutes','Sustained 55 km/h in a 40 km/h zone for 18s near University Gate.','{"peak_kmh":55,"limit_kmh":40,"sustained_s":18}'::jsonb,'OVERSPEED:day2'),
+  ('0a1e0008-0000-4000-8000-000000000008','0ed00004-0000-4000-8000-000000000004','0c000007-0000-4000-8000-000000000007','0a5c0002-0000-4000-8000-000000000002','0e100003-0000-4000-8000-000000000003','0d110003-0000-4000-8000-000000000003','LONG_STOP',null,'WARN','MEDIUM','OPEN', now() - interval '1 day' - interval '20 minutes', now() - interval '1 day','Stationary 7 min beyond allowed dwell at Shalimar.','{"dwell_s":420,"allowed_s":180}'::jsonb,'LONG_STOP:day1b');
 
 -- ── COMPLAINTS ───────────────────────────────────────────────────────────────
 insert into complaints (id, school_id, vehicle_id, trip_id, anonymous, category, ai_suggested_category,

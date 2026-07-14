@@ -1,4 +1,5 @@
 import QRCode from 'qrcode';
+import { headers } from 'next/headers';
 import { requireProfile } from '@/lib/server/auth';
 import { serviceClient } from '@/lib/supabase/server';
 import { stickerPayload } from '@/lib/server/bind';
@@ -49,8 +50,35 @@ export default async function FleetPage() {
       client.from('drivers').select('full_name, phone, licence_no, licence_expiry, active').eq('school_id', profile.school_id).order('full_name'),
     ]);
     const vehicles = (vRaw ?? []) as Vehicle[];
+
+    // Build the app origin from the request host so the QR opens on a phone.
+    // NEXT_PUBLIC_SITE_URL pins it if you don't want to rely on the Host header;
+    // otherwise load this page via the PC's LAN IP (e.g. http://192.168.x.x:3001).
+    const h = await headers();
+    const host = h.get('x-forwarded-host') ?? h.get('host') ?? 'localhost:3000';
+    const proto = h.get('x-forwarded-proto') ?? 'http';
+    const origin = process.env.NEXT_PUBLIC_SITE_URL ?? `${proto}://${host}`;
+
+    // A bus with a completed evidence chain gets a PUBLIC verify QR: scanning it
+    // from any phone (incl. on Vercel over HTTPS) opens /verify/<hash>, a no-login
+    // SHA-256 integrity check. Buses without one keep the driver bind-scan QR.
+    const { data: chRows } = await client
+      .from('trips')
+      .select('vehicle_id, chain_head')
+      .eq('school_id', profile.school_id);
+    const verifyHash = new Map<string, string>();
+    for (const t of (chRows ?? []) as { vehicle_id: string; chain_head: string | null }[]) {
+      if (t.chain_head && !verifyHash.has(t.vehicle_id)) verifyHash.set(t.vehicle_id, t.chain_head);
+    }
+
+    const scanUrl = (v: Vehicle) =>
+      `${origin}/driver/scan?c=${encodeURIComponent(stickerPayload(v.id, v.bind_secret))}`;
     const qrs = await Promise.all(
-      vehicles.map((v) => QRCode.toDataURL(stickerPayload(v.id, v.bind_secret), { margin: 1, width: 140 }).catch(() => ''))
+      vehicles.map((v) => {
+        const head = verifyHash.get(v.id);
+        const target = head ? `${origin}/verify/${head}` : scanUrl(v);
+        return QRCode.toDataURL(target, { margin: 1, width: 140 }).catch(() => '');
+      })
     );
 
     if (vehicles.length === 0) return <EmptyState title="No vehicles for this school." />;
@@ -79,6 +107,11 @@ export default async function FleetPage() {
                   <img src={qrs[i]} alt={`Bind QR for ${v.bus_code}`} className="mx-auto mt-1 rounded bg-white p-1" width={140} height={140} />
                 ) : (
                   <div className="mt-1 text-11 text-ink-500">QR unavailable</div>
+                )}
+                {verifyHash.get(v.id) ? (
+                  <div className="mt-1 text-11 font-medium text-sig-ok">Scan to verify evidence — SHA-256, public</div>
+                ) : (
+                  <div className="mt-1 text-11 font-medium text-viz-1">Scan to bind (driver)</div>
                 )}
                 <div className="tnum mt-1 break-all text-[10px] text-ink-500">{stickerPayload(v.id, v.bind_secret)}</div>
               </div>

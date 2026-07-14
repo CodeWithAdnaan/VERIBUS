@@ -65,11 +65,15 @@ async function initDb(db: PGlite) {
     const schemaSql = fs.readFileSync(path.resolve(process.cwd(), 'db/schema.sql'), 'utf8');
     const policiesSql = fs.readFileSync(path.resolve(process.cwd(), 'db/policies.sql'), 'utf8');
     const seedSql = fs.readFileSync(path.resolve(process.cwd(), 'db/seed.sql'), 'utf8');
+    // Demo dataset: today's trips, alerts, evidence, telemetry, complaints. Loaded
+    // into the SAME in-memory DB the app queries, so every board has live data.
+    const seedDemoSql = fs.readFileSync(path.resolve(process.cwd(), 'db/seed_demo.sql'), 'utf8');
 
     // Run schema, policies, and backbone seed
     await db.exec(schemaSql);
     await db.exec(policiesSql);
     await db.exec(seedSql);
+    await db.exec(seedDemoSql);
 
     // Run the dynamic roster and users seeding
     await seedDynamicRosterAndUsers(db);

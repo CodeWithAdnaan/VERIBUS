@@ -1,6 +1,6 @@
 import { OpsShell } from '@/components/shell/OpsShell';
 import { requireProfile } from '@/lib/server/auth';
-import { LayoutDashboard, Bell, MessageSquareWarning, Bus, FileText } from 'lucide-react';
+import { LayoutDashboard, Bell, MessageSquareWarning, Bus, FileText, CalendarPlus } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +8,7 @@ export default async function SchoolLayout({ children }: { children: React.React
   const profile = await requireProfile(['school_admin']);
   const nav = [
     { href: '/school', label: 'Live board', Icon: LayoutDashboard },
+    { href: '/school/schedule', label: 'Schedule', Icon: CalendarPlus },
     { href: '/school/alerts', label: 'Alerts', Icon: Bell },
     { href: '/school/complaints', label: 'Complaints', Icon: MessageSquareWarning },
     { href: '/school/fleet', label: 'Fleet', Icon: Bus },
